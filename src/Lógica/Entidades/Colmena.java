@@ -6,13 +6,12 @@ import java.util.Random;
 
 public class Colmena {
   private Posición posición;
-  private NaveEnemiga[][] colmenaEnemigos;
 
   public Colmena(Posición posición) {
     this.posición = posición;
   }
 
-  public Misil disparar() {
+  public Misil disparar(NaveEnemiga[][] colmenaEnemigos) {
     Random random = new Random();
     NaveEnemiga naveEnemiga = null;
     int fila, columna;
@@ -26,7 +25,7 @@ public class Colmena {
   }
 
   public NaveEnemiga[][] generarColmenaEnemigos(int filas, int columnas) {
-    colmenaEnemigos = new NaveEnemiga[filas][columnas];
+    NaveEnemiga[][] colmenaEnemigos = new NaveEnemiga[filas][columnas];
     for (int i = 0; i < colmenaEnemigos.length; i++) {
       for (int j = 0; j < colmenaEnemigos[0].length; j++) {
         int puntuacion = obtenerPuntuaciónDeEnemigos(i);

@@ -9,7 +9,7 @@ import java.awt.*;
 import java.util.Random;
 
 public class PowerUpVida implements PowerUp {
-  public static final int IMCREMENTADOR_DE_VIDA = 1;
+  public static final int INCREMENTADOR_DE_VIDA = 1;
   public static final int VELOCIDAD_POWER_UP = 3;
   private final Movimiento movimientoAbajo;
   private Posición posición;
@@ -21,7 +21,7 @@ public class PowerUpVida implements PowerUp {
 
   @Override
   public void establecerPowerUp(NaveJugador naveJugador) {
-    naveJugador.establecerVida(naveJugador.obtenerVida() + IMCREMENTADOR_DE_VIDA);
+    naveJugador.establecerVida(naveJugador.obtenerVida() + INCREMENTADOR_DE_VIDA);
   }
 
   public void caerPowerUp() {

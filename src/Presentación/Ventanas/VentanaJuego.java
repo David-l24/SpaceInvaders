@@ -76,6 +76,8 @@ public class VentanaJuego extends JPanel implements Runnable, Serializable {
   private long últimoTiempoMovimientoMenú = 0;
   private long últimoTiempoGeneradoOvni = 0;
   private long tiempoDeInicioDeJuego;
+  private long tiempoDeInicioDePausa;
+
   private long últimoTiempoConfirmar = 0;
   private static final long TIEMPO_ENTRE_CONFIRMACIONES = 200;
 
@@ -223,7 +225,6 @@ public class VentanaJuego extends JPanel implements Runnable, Serializable {
           administradorTeclas.cambiarEstadoActualDeLaVentana(estadoDeLaVentanaActual);
         }
       } else if (acción == AcciónUsuario.CONFIRMAR && opciónDeUsuario == 1) {
-        //reiniciarJuego();
         cargarPartida();
       } else if (acción == AcciónUsuario.CONFIRMAR && opciónDeUsuario == 2) {
         System.exit(0);
@@ -314,7 +315,7 @@ public class VentanaJuego extends JPanel implements Runnable, Serializable {
     misilesJugador.removeIf(misil -> misil.obtenerPosiciónMisil().obtenerPosiciónY() < 0);
 
     if (tiempoActual - últimoTiempoDisparoColmena >= TIEMPO_ENTRE_DISPAROS_ENEMIGOS) {
-      misilesEnemigos.add(colmena.disparar());
+      misilesEnemigos.add(colmena.disparar(navesEnemigas));
       últimoTiempoDisparoColmena = tiempoActual;
     }
     misilesEnemigos.forEach(Misil::dispararAbajo);
@@ -391,7 +392,7 @@ public class VentanaJuego extends JPanel implements Runnable, Serializable {
       }
     }
     if (colmenaDescendiendo) {
-      distanciaDescendida += 2;
+      distanciaDescendida += NaveEnemiga.obtenerVelocidadEnemigo();
       if (distanciaDescendida >= TAMAÑO_ENTIDAD) {
         colmenaDescendiendo = false;
         distanciaDescendida = 0;
@@ -432,6 +433,7 @@ public class VentanaJuego extends JPanel implements Runnable, Serializable {
   public void pausarJuego() {
     enPausa = true;
     pausarMúsica();
+    tiempoDeInicioDePausa = System.currentTimeMillis();
   }
 
   private void pausarMúsica() {
@@ -441,6 +443,7 @@ public class VentanaJuego extends JPanel implements Runnable, Serializable {
   public void reanudarJuego() {
     enPausa = false;
     reanudarMusica();
+    tiempoDeInicioDeJuego += (System.currentTimeMillis() - tiempoDeInicioDePausa);
   }
 
   private void reanudarMusica() {
@@ -570,8 +573,7 @@ public class VentanaJuego extends JPanel implements Runnable, Serializable {
     graphics2D.setColor(Color.pink);
     graphics2D.drawString("Puntos: " + naveJugador.obtenerPuntos(), 10, 65);
     graphics2D.drawString("Vidas: " + naveJugador.obtenerVida(), 10, 90);
-    long tiempoActual = System.currentTimeMillis();
-    long tiempoTranscurrido = tiempoActual - tiempoDeInicioDeJuego;
+    long tiempoTranscurrido = System.currentTimeMillis() - tiempoDeInicioDeJuego;
     long segundosTranscurridos = tiempoTranscurrido / 1000;
     long minutosTranscurridos = segundosTranscurridos / 60;
     segundosTranscurridos = segundosTranscurridos % 60;
@@ -676,9 +678,6 @@ public class VentanaJuego extends JPanel implements Runnable, Serializable {
       administradorTeclas.cambiarEstadoActualDeLaVentana(estadoDeLaVentanaActual);
     } catch (FileNotFoundException e) {
       estadoDeLaVentanaActual = EstadoDeLaVentana.PRINCIPAL;
-      //administradorTeclas.cambiarEstadoActualDeLaVentana(estadoDeLaVentanaActual);
-      //JOptionPane.showMessageDialog(this, "No existe una partida guardada.", "Advertencia", JOptionPane.WARNING_MESSAGE);
-      //opciónDeUsuario = 0;
     } catch (IOException | ClassNotFoundException e) {
       e.printStackTrace();
     }
